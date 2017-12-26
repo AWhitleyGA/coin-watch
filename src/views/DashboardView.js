@@ -58,7 +58,7 @@ class DashboardView extends Component {
             {
               this.state.trackedCoins.length &&
               <Route
-                path={`${this.props.match.url}`}
+                path="/*"
                 render={() => <Redirect to={`${this.props.match.url}/${this.state.trackedCoins[0].symbol}`} />}
               />
             }
