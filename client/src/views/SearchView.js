@@ -1,15 +1,31 @@
 import React, { Component } from 'react'
+import axios from 'axios'
 
 import SearchForm from '../components/SearchForm'
+import FilteredList from '../components/FilteredList'
 
 class SearchView extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      searchSymbol: null
+      searchSymbol: null,
+      symbolOptions: []
     }
     this.handleSearchInput = this.handleSearchInput.bind(this)
     this.handleSearchSubmit = this.handleSearchSubmit.bind(this)
+  }
+
+  componentDidMount () {
+    axios.get('http://localhost:3001/api/prices')
+      .then((response) => {
+        console.log(response.data)
+        this.setState({
+          symbolOptions: response.data
+        })
+      })
+      .catch((err) => {
+        console.log(err)
+      })
   }
 
   handleSearchInput (e) {
@@ -31,6 +47,16 @@ class SearchView extends Component {
           onSearchInput={this.handleSearchInput}
           onSearchSubmit={this.handleSearchSubmit}
         />
+        {
+          this.state.symbolOptions[0] &&
+          this.state.searchSymbol &&
+          <FilteredList
+            fullList={this.state.symbolOptions}
+            filterAttribute='symbol'
+            filterValue={this.state.searchSymbol}
+            displayAttribute='symbol'
+          />
+        }
       </div>
     )
   }
