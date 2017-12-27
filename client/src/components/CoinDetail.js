@@ -8,7 +8,6 @@ class CoinDetail extends Component {
     super(props)
     this.state = {
       recentPrices: [],
-      // timer: setInterval(this.fetchTradeData.bind(this), 5000)
     }
   }
 
@@ -16,12 +15,8 @@ class CoinDetail extends Component {
     this.fetchTradeData()
   }
 
-  // componentWillUnmount () {
-  //   clearInterval(this.state.timer)
-  // }
-
   fetchTradeData () {
-    axios.get(`http://localhost:3001/api/${this.props.coin.symbol}/prices`)
+    axios.get(`http://localhost:3001/api/prices/${this.props.coin.symbol}`)
       .then((response) => {
         this.setState({
           recentPrices: response.data.map((price) => {
@@ -46,7 +41,7 @@ class CoinDetail extends Component {
           !this.state.recentPrices[0] ?
           <p>Loading...</p> :
           <div>
-          <p>${this.state.recentPrices[0] && this.state.recentPrices[0].price}</p>
+          <p>{this.state.recentPrices[0] && this.state.recentPrices[0].price}</p>
           <LineChart
             width={500}
             height={300}

@@ -8,8 +8,18 @@ app.use(cors())
 
 app.set('port', process.env.PORT || 3001)
 
-app.get('/api/:symbol/prices', (req, res) => {
-  axios.get(`http://api.binance.com/api/v1/klines`, {
+app.get('/api/prices', (req, res) => {
+  axios.get('http://api.binance.com/api/v1/ticker/allPrices')
+    .then((response) => {
+      res.json(response.data)
+    })
+    .catch((err) => {
+      res.json(err)
+    })
+})
+
+app.get('/api/prices/:symbol', (req, res) => {
+  axios.get('http://api.binance.com/api/v1/klines', {
     params: {
       symbol: `${req.params.symbol}`,
       interval: '15m',
