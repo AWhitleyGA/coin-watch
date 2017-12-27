@@ -9,10 +9,10 @@ import {
 import CoinDetail from '../components/CoinDetail'
 
 const coins = [
-  { symbol: 'BTC', currentSellPrice: 14500.45 },
-  { symbol: 'LTC', currentSellPrice: 310.35 },
-  { symbol: 'ETH', currentSellPrice: 715.89 },
-  { symbol: 'XRP', currentSellPrice: 1.15 }
+  { symbol: 'BTCUSDT' },
+  { symbol: 'LTCUSDT' },
+  { symbol: 'ETHUSDT' },
+  { symbol: 'XRPBTC' }
 ]
 
 class DashboardView extends Component {

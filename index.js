@@ -11,7 +11,7 @@ app.set('port', process.env.PORT || 3001)
 app.get('/api/:symbol/prices', (req, res) => {
   axios.get(`http://api.binance.com/api/v1/klines`, {
     params: {
-      symbol: `${req.params.symbol}USDT`,
+      symbol: `${req.params.symbol}`,
       interval: '15m',
       limit: 48
     }
