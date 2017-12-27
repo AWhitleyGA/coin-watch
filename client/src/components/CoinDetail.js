@@ -20,7 +20,11 @@ class CoinDetail extends Component {
   }
 
   fetchTradeData () {
-    axios.get(`http://api.binance.com/api/v1/aggTrades?symbol=${this.props.coin.symbol}USDT`)
+    axios.get(`http://api.binance.com/api/v1/aggTrades?symbol=${this.props.coin.symbol}USDT`, {
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+      }
+    })
       .then((response) => {
         this.setState({
           recentTrades: response
