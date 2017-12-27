@@ -8,8 +8,14 @@ app.use(cors())
 
 app.set('port', process.env.PORT || 3001)
 
-app.get('/api/:symbol/trades', (req, res) => {
-  axios.get(`http://api.binance.com/api/v1/aggTrades?symbol=${req.params.symbol}USDT`)
+app.get('/api/:symbol/prices', (req, res) => {
+  axios.get(`http://api.binance.com/api/v1/klines`, {
+    params: {
+      symbol: `${req.params.symbol}USDT`,
+      interval: '15m',
+      limit: 48
+    }
+  })
     .then((response) => {
       res.json(response.data)
     })
