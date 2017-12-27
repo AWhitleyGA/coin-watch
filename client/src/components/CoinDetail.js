@@ -1,13 +1,14 @@
 import React, { Component } from 'react'
 import axios from 'axios'
-
+import { LineChart, Line, CartesianGrid, YAxis, XAxis } from 'recharts'
+import moment from 'moment'
 
 class CoinDetail extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      recentTrades: [],
-      timer: setInterval(this.fetchTradeData.bind(this), 5000)
+      recentPrices: [],
+      // timer: setInterval(this.fetchTradeData.bind(this), 5000)
     }
   }
 
@@ -15,15 +16,20 @@ class CoinDetail extends Component {
     this.fetchTradeData()
   }
 
-  componentWillUnmount () {
-    clearInterval(this.state.timer)
-  }
+  // componentWillUnmount () {
+  //   clearInterval(this.state.timer)
+  // }
 
   fetchTradeData () {
-    axios.get(`http://localhost:3001/api/${this.props.coin.symbol}/trades`)
+    axios.get(`http://localhost:3001/api/${this.props.coin.symbol}/prices`)
       .then((response) => {
         this.setState({
-          recentTrades: response.data
+          recentPrices: response.data.map((price) => {
+            return {
+              time: moment(price[0]).format('h:mma'),
+              price: parseFloat(price[1])
+            }
+          })
         })
       })
       .catch((err) => {
@@ -32,11 +38,34 @@ class CoinDetail extends Component {
   }
 
   render () {
-    console.log(this.state.recentTrades)
+    console.log(this.state.recentPrices)
     return (
       <div>
         <h2>{this.props.coin.symbol}</h2>
-        <p>{this.props.coin.currentSellPrice}</p>
+        {
+          !this.state.recentPrices[0] ?
+          <p>Loading...</p> :
+          <div>
+          <p>${this.state.recentPrices[0] && this.state.recentPrices[0].price}</p>
+          <LineChart
+            width={500}
+            height={300}
+            data={this.state.recentPrices}
+          >
+            <CartesianGrid strokeDasharray='3 3' />
+            <XAxis dataKey='time' />
+            <YAxis
+              dataKey='price'
+              domain={['dataMin', 'dataMax']}
+            />
+            <Line
+              type='monotone'
+              dataKey='price'
+              stroke='#88FF88'
+            />
+          </LineChart>
+          </div>
+        }
       </div>
     )
   }
