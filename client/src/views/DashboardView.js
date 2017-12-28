@@ -60,7 +60,7 @@ class DashboardView extends Component {
         <nav className="navbar navbar--column navbar--secondary-theme">
           {coinLinks}
         </nav>
-        <div>
+        <div className="Dashboard__content">
           <Switch>
             {coinRoutes}
             {

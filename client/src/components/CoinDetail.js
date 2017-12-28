@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import axios from 'axios'
-import { LineChart, Line, CartesianGrid, YAxis, XAxis } from 'recharts'
+import { ResponsiveContainer, LineChart, Line, CartesianGrid, YAxis, XAxis, Tooltip } from 'recharts'
 import moment from 'moment'
 
 class CoinDetail extends Component {
@@ -41,24 +41,34 @@ class CoinDetail extends Component {
           !this.state.recentPrices[0] ?
           <p>Loading...</p> :
           <div>
-          <p>{this.state.recentPrices[0] && this.state.recentPrices[0].price}</p>
-          <LineChart
-            width={500}
-            height={300}
-            data={this.state.recentPrices}
-          >
-            <CartesianGrid strokeDasharray='3 3' />
-            <XAxis dataKey='time' />
-            <YAxis
-              dataKey='price'
-              domain={['dataMin', 'dataMax']}
-            />
-            <Line
-              type='monotone'
-              dataKey='price'
-              stroke='#88FF88'
-            />
-          </LineChart>
+            <p>{this.state.recentPrices[0] && this.state.recentPrices[0].price}</p>
+            <ResponsiveContainer
+              width="90%"
+              height={400}
+            >
+              <LineChart
+                margin={{
+                  top: 10,
+                  bottom: 10,
+                  left: 50,
+                  right: 0
+                }}
+                data={this.state.recentPrices}
+              >
+                <CartesianGrid strokeDasharray='2 2' />
+                <XAxis dataKey='time' />
+                <YAxis
+                  dataKey='price'
+                  domain={['dataMin', 'dataMax']}
+                />
+                <Line
+                  type='monotone'
+                  dataKey='price'
+                  stroke='rgb(59, 182, 206)'
+                />
+                <Tooltip />
+              </LineChart>
+            </ResponsiveContainer>
           </div>
         }
       </div>
