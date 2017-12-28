@@ -34,4 +34,10 @@ app.get('/api/prices/:symbol', (req, res) => {
     })
 })
 
+app.use(express.static('client/build'))
+
+app.get('/*', (req, res) => {
+  res.sendFile(__dirname + '/client/build/index.html')
+})
+
 app.listen(app.get('port'))
