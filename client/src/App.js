@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  Link,
+  NavLink,
   Route,
   Redirect,
   Switch
@@ -14,13 +14,13 @@ import './App.css'
 class App extends Component {
   render() {
     return (
-      <div>
-        <nav>
-          <h1>CoinWatch</h1>
-          <Link to='/dashboard'>Dashboard</Link>
-          <Link to='/search'>Search</Link>
+      <div className="App">
+        <nav className="navbar navbar--primary-theme">
+          <h1 className="navbar__header">CoinWatch</h1>
+          <NavLink to='/dashboard' className="navbar__item" activeClassName="navbar__item--selected">Dashboard</NavLink>
+          <NavLink to='/search' className="navbar__item" activeClassName="navbar__item--selected">Search</NavLink>
         </nav>
-        <main>
+        <main className="App__main">
           <Switch>
             <Route
               path='/dashboard'
@@ -36,6 +36,9 @@ class App extends Component {
             />
           </Switch>
         </main>
+        <footer className="footer footer--black-theme">
+          <p className="footer__item">by Andrew Whitley</p>
+        </footer>
       </div>
     )
   }

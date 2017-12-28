@@ -1,12 +1,14 @@
 import React, { Component } from 'react'
 import {
-  Link,
+  NavLink,
   Route,
   Switch,
   Redirect
 } from 'react-router-dom'
 
 import CoinDetail from '../components/CoinDetail'
+
+import './DashboardView.css'
 
 const coins = [
   { symbol: 'BTCUSDT' },
@@ -32,7 +34,14 @@ class DashboardView extends Component {
   render () {
     let coinLinks = this.state.trackedCoins.map((coin, index) => {
       return (
-        <Link key={index} to={`${this.props.match.url}/${coin.symbol}`}>{coin.symbol}</Link>
+        <NavLink
+          to={`${this.props.match.url}/${coin.symbol}`}
+          key={index}
+          className="navbar__item"
+          activeClassName="navbar__item--selected"
+        >
+          {coin.symbol}
+        </NavLink>
       )
     })
 
@@ -47,11 +56,10 @@ class DashboardView extends Component {
     })
 
     return (
-      <div>
-        <h1>Dashboard</h1>
-        <div>
+      <div className="Dashboard">
+        <nav className="navbar navbar--column navbar--secondary-theme">
           {coinLinks}
-        </div>
+        </nav>
         <div>
           <Switch>
             {coinRoutes}
