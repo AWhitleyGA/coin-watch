@@ -8,9 +8,13 @@
     "cors": "^2.8.4",
     "express": "^4.16.2"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "concurrently": "^3.5.1"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev-start": " concurrently 'nodemon index.js' 'cd client && npm run start' "
   },
   "keywords": [],
   "author": "",

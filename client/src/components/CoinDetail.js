@@ -16,7 +16,7 @@ class CoinDetail extends Component {
   }
 
   fetchTradeData () {
-    axios.get(`http://localhost:3001/api/prices/${this.props.coin.symbol}`)
+    axios.get(`/api/prices/${this.props.coin.symbol}`)
       .then((response) => {
         this.setState({
           recentPrices: response.data.map((price) => {

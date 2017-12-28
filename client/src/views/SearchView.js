@@ -16,7 +16,7 @@ class SearchView extends Component {
   }
 
   componentDidMount () {
-    axios.get('http://localhost:3001/api/prices')
+    axios.get('/api/prices')
       .then((response) => {
         console.log(response.data)
         this.setState({
