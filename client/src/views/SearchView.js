@@ -44,10 +44,10 @@ class SearchView extends Component {
   render () {
     return (
       <div className="SearchView">
-        <h1>Search</h1>
         <SearchForm
           onSearchInput={this.handleSearchInput}
-          onSearchSubmit={this.handleSearchSubmit}
+          label="Ticker Search"
+          placeholder="Enter Coin Symbol..."
         />
         {
           this.state.symbolOptions[0] &&
