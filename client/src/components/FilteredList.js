@@ -1,5 +1,6 @@
 import React from 'react'
 
+import './FilteredList.css'
 
 const FilteredList = (props) => {
   let { fullList, filterAttribute, filterValue, displayAttribute } = props
@@ -14,7 +15,7 @@ const FilteredList = (props) => {
   }, [])
 
   return (
-    <div>
+    <div className="FilteredList">
       {filteredItems}
     </div>
   )

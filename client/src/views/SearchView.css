@@ -1,0 +1,4 @@
+.SearchView {
+  display: flex;
+  flex-direction: column;
+}

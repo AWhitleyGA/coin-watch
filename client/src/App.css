@@ -12,6 +12,8 @@
 .navbar {
   display: flex;
   padding: 0.1rem;
+  flex-shrink: 0;
+  z-index: 1;
 }
 
 .navbar--column {
@@ -60,6 +62,8 @@
 .footer {
   display: flex;
   justify-content: center;
+  flex-shrink: 0;
+  z-index: 1;
 }
 
 .footer--black-theme {

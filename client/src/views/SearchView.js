@@ -4,6 +4,8 @@ import axios from 'axios'
 import SearchForm from '../components/SearchForm'
 import FilteredList from '../components/FilteredList'
 
+import './SearchView.css'
+
 class SearchView extends Component {
   constructor (props) {
     super(props)
@@ -41,7 +43,7 @@ class SearchView extends Component {
 
   render () {
     return (
-      <div>
+      <div className="SearchView">
         <h1>Search</h1>
         <SearchForm
           onSearchInput={this.handleSearchInput}
