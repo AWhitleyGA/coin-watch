@@ -3,6 +3,7 @@ import axios from 'axios'
 
 import SearchForm from '../components/SearchForm'
 import FilteredList from '../components/FilteredList'
+import CoinDetail from '../components/CoinDetail'
 
 import './SearchView.css'
 
@@ -10,11 +11,13 @@ class SearchView extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      searchSymbol: null,
+      searchSymbol: '',
+      symbolSelected: false,
       symbolOptions: []
     }
     this.handleSearchInput = this.handleSearchInput.bind(this)
-    this.handleSearchSubmit = this.handleSearchSubmit.bind(this)
+    this.handleSymbolSelect = this.handleSymbolSelect.bind(this)
+    this.addTicker = this.addTicker.bind(this)
   }
 
   componentDidMount () {
@@ -32,32 +35,55 @@ class SearchView extends Component {
 
   handleSearchInput (e) {
     this.setState({
-      searchSymbol: e.target.value
+      searchSymbol: e.target.value,
+      symbolSelected: false
     })
   }
 
-  handleSearchSubmit (e) {
-    e.preventDefault()
-    console.log(`Searching for ${this.state.searchSymbol}`)
+  handleSymbolSelect (e) {
+    console.log(e.target.dataset.itemvalue)
+    this.setState({
+      searchSymbol: e.target.dataset.itemvalue,
+      symbolSelected: true,
+    }, () => {
+      console.log(this.state)
+    })
+  }
+
+  addTicker () {
+    // Add axios POST to back-end to add symbol
+    this.props.history.push(`/dashboard/${this.state.searchSymbol}`)
   }
 
   render () {
     return (
       <div className="SearchView">
         <SearchForm
+          value={this.state.searchSymbol}
           onSearchInput={this.handleSearchInput}
           label="Ticker Search"
           placeholder="Enter Coin Symbol..."
         />
         {
-          this.state.symbolOptions[0] &&
           this.state.searchSymbol &&
+          !this.state.symbolSelected &&
           <FilteredList
             fullList={this.state.symbolOptions}
             filterAttribute='symbol'
             filterValue={this.state.searchSymbol}
             displayAttribute='symbol'
+            onItemClick={this.handleSymbolSelect}
           />
+        }
+        {
+          this.state.searchSymbol &&
+          this.state.symbolSelected &&
+          <div>
+            <CoinDetail
+              coin={{ symbol: this.state.searchSymbol }}
+            />
+            <button onClick={this.addTicker}>Add Ticker to Dashboard</button>
+          </div>
         }
       </div>
     )

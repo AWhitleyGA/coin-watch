@@ -3,7 +3,8 @@ import React from 'react'
 import './SearchForm.css'
 
 const SearchForm = (props) => {
-  let { onSearchSubmit, onSearchInput, label, placeholder } = props
+  console.log(props)
+  let { value, onSearchSubmit, onSearchInput, label, placeholder } = props
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -20,6 +21,7 @@ const SearchForm = (props) => {
       }
       <input
         type="text"
+        value={value}
         placeholder={placeholder}
         onChange={onSearchInput}
         className="SearchForm__input"

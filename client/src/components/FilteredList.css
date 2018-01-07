@@ -1,3 +1,14 @@
 .FilteredList {
   overflow-y: scroll;
 }
+
+.FilteredList__item {
+  border-bottom: 0.1rem solid rgba(0, 0, 0, 0.1);
+  padding: 0.3rem;
+  box-sizing: border-box;
+}
+
+.FilteredList__item:hover {
+  background: rgb(250, 250, 250);
+  cursor: pointer;
+}
