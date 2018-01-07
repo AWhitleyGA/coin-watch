@@ -51,8 +51,15 @@ class SearchView extends Component {
   }
 
   addTicker () {
-    // Add axios POST to back-end to add symbol
-    this.props.history.push(`/dashboard/${this.state.searchSymbol}`)
+    axios.post('/api/tickers', {
+      symbol: this.state.searchSymbol
+    })
+    .then((response) => {
+      this.props.history.push(`/dashboard/${response.data.symbol}`)
+    })
+    .catch((err) => {
+      console.log(err)
+    })
   }
 
   render () {

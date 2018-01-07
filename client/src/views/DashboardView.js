@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import axios from 'axios'
 import {
   NavLink,
   Route,
@@ -10,13 +11,6 @@ import CoinDetail from '../components/CoinDetail'
 
 import './DashboardView.css'
 
-const coins = [
-  { symbol: 'BTCUSDT' },
-  { symbol: 'LTCUSDT' },
-  { symbol: 'ETHUSDT' },
-  { symbol: 'XRPBTC' }
-]
-
 class DashboardView extends Component {
   constructor (props) {
     super(props)
@@ -26,9 +20,15 @@ class DashboardView extends Component {
   }
 
   componentDidMount () {
-    this.setState({
-      trackedCoins: coins
-    })
+    axios.get('/api/tickers')
+      .then((response) => {
+        this.setState({
+          trackedCoins: response.data
+        })
+      })
+      .catch((err) => {
+        console.log(err)
+      })
   }
 
   render () {
