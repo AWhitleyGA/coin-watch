@@ -2,18 +2,46 @@ const express = require('express')
 const axios = require('axios')
 const cors = require('cors')
 const parser = require('body-parser')
+const jwt = require('jwt-simple')
 
 const mongoose = require('./db/schema')
 const Ticker = mongoose.model('Ticker')
+const User = mongoose.model('User')
+
+const auth = require('./auth')()
+const config = require('./config')
 
 const app = express()
 
 app.use(cors())
 app.use(parser.json())
+app.use(auth.initialize())
 
 app.set('port', process.env.PORT || 3001)
 
-app.get('/api/tickers', (req, res) => {
+app.post('/api/auth/login', (req, res) => {
+  User.findOne({
+    email: req.body.email,
+    password: req.body.password
+  })
+  .then((user) => {
+    if (user) {
+      console.log(user._id, config.jwtSecret)
+      let token = jwt.encode({ _id: user._id }, config.jwtSecret)
+      res.json({
+        token: token,
+        email: user.email
+      })
+    } else {
+      res.status(401).send()
+    }
+  })
+  .catch((err) => {
+    res.status(500).send(err)
+  })
+})
+
+app.get('/api/tickers', auth.authenticate(), (req, res) => {
   Ticker.find({})
     .then((tickers) => {
       res.json(tickers)
@@ -65,4 +93,6 @@ app.get('/*', (req, res) => {
   res.sendFile(__dirname + '/client/build/index.html')
 })
 
-app.listen(app.get('port'))
+app.listen(app.get('port'), () => {
+  console.log(`Express starting on ${app.get('port')}`)
+})
