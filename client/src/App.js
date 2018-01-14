@@ -1,17 +1,27 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
+import axios from 'axios'
 import {
   NavLink,
   Route,
   Redirect,
-  Switch
+  Switch,
+  withRouter
 } from 'react-router-dom'
 
 import DashboardView from './views/DashboardView'
 import SearchView from './views/SearchView'
+import LoginView from './views/LoginView'
 
 import './App.css'
 
 class App extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      user: null
+    }
+  }
+
   render() {
     return (
       <div className="App">
@@ -31,6 +41,10 @@ class App extends Component {
               component={SearchView}
             />
             <Route
+              path='/login'
+              component={LoginView}
+            />
+            <Route
               path='/*'
               render={() => <Redirect to='/dashboard' />}
             />
@@ -44,4 +58,4 @@ class App extends Component {
   }
 }
 
-export default App
+export default withRouter(App)

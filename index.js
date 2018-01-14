@@ -41,6 +41,16 @@ app.post('/api/auth/login', (req, res) => {
   })
 })
 
+app.get('/api/auth/user', auth.authenticate(), (req, res) => {
+  if (req.user) {
+    res.json({
+      email: req.user.email
+    })
+  } else {
+    res.status(401).send()
+  }
+})
+
 app.get('/api/tickers', auth.authenticate(), (req, res) => {
   Ticker.find({})
     .then((tickers) => {

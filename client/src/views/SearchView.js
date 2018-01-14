@@ -5,6 +5,8 @@ import SearchForm from '../components/SearchForm'
 import FilteredList from '../components/FilteredList'
 import CoinDetail from '../components/CoinDetail'
 
+import { checkAuthentication } from '../utils'
+
 import './SearchView.css'
 
 class SearchView extends Component {
@@ -21,15 +23,22 @@ class SearchView extends Component {
   }
 
   componentDidMount () {
-    axios.get('/api/prices')
-      .then((response) => {
-        console.log(response.data)
-        this.setState({
-          symbolOptions: response.data
-        })
+    checkAuthentication()
+      .then(() => {
+        axios.get('/api/prices')
+          .then((response) => {
+            this.setState({
+              symbolOptions: response.data
+            })
+          })
+          .catch((err) => {
+            console.log(err)
+          })
       })
-      .catch((err) => {
-        console.log(err)
+      .catch(() => {
+        this.props.history.push('/login', {
+          previousLocation: this.props.match.url
+        })
       })
   }
 

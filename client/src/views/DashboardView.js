@@ -9,6 +9,8 @@ import {
 
 import CoinDetail from '../components/CoinDetail'
 
+import { checkAuthentication } from '../utils'
+
 import './DashboardView.css'
 
 class DashboardView extends Component {
@@ -20,14 +22,26 @@ class DashboardView extends Component {
   }
 
   componentDidMount () {
-    axios.get('/api/tickers')
-      .then((response) => {
-        this.setState({
-          trackedCoins: response.data
+    checkAuthentication()
+      .then(() => {
+        axios({
+          type:'get',
+          url: '/api/tickers',
+          headers: {
+            Authorization: localStorage.getItem('CoinWatchToken')
+          }
+        })
+        .then((response) => {
+          this.setState({
+            trackedCoins: response.data
+          })
+        })
+        .catch((err) => {
+          console.log(err)
         })
       })
-      .catch((err) => {
-        console.log(err)
+      .catch(() => {
+        this.props.history.replace('/login', { previousLocation: this.props.match.url })
       })
   }
 
