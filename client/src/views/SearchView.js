@@ -50,12 +50,9 @@ class SearchView extends Component {
   }
 
   handleSymbolSelect (e) {
-    console.log(e.target.dataset.itemvalue)
     this.setState({
       searchSymbol: e.target.dataset.itemvalue,
       symbolSelected: true,
-    }, () => {
-      console.log(this.state)
     })
   }
 

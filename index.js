@@ -26,7 +26,6 @@ app.post('/api/auth/login', (req, res) => {
   })
   .then((user) => {
     if (user) {
-      console.log(user._id, config.jwtSecret)
       let token = jwt.encode({ _id: user._id }, config.jwtSecret)
       res.json({
         token: token,

@@ -33,7 +33,6 @@ class CoinDetail extends Component {
   }
 
   render () {
-    console.log(this.state.recentPrices)
     return (
       <div>
         <h2>{this.props.coin.symbol}</h2>

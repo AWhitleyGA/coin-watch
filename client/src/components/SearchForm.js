@@ -3,7 +3,6 @@ import React from 'react'
 import './SearchForm.css'
 
 const SearchForm = (props) => {
-  console.log(props)
   let { value, onSearchSubmit, onSearchInput, label, placeholder } = props
 
   const handleSubmit = (e) => {

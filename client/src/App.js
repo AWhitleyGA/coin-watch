@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import axios from 'axios'
 import {
   NavLink,
   Route,
@@ -15,13 +14,6 @@ import LoginView from './views/LoginView'
 import './App.css'
 
 class App extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      user: null
-    }
-  }
-
   render() {
     return (
       <div className="App">
