@@ -20,24 +20,28 @@ app.use(auth.initialize())
 app.set('port', process.env.PORT || 3001)
 
 app.post('/api/auth/login', (req, res) => {
-  User.findOne({
-    email: req.body.email,
-    password: req.body.password
-  })
-  .then((user) => {
-    if (user) {
-      let token = jwt.encode({ _id: user._id }, config.jwtSecret)
-      res.json({
-        token: token,
-        email: user.email
-      })
-    } else {
-      res.status(401).send()
-    }
-  })
-  .catch((err) => {
-    res.status(500).send(err)
-  })
+  User.findOne({ email: req.body.email })
+    .then((user) => {
+      if (user) {
+        user.checkPassword(req.body.password)
+          .then((match) => {
+            if (match) {
+              let token = jwt.encode({ _id: user._id }, config.jwtSecret)
+              res.json({
+                token: token,
+                email: user.email
+              })
+            } else {
+              res.status(401).send('email and passord do not match')
+            }
+          })
+      } else {
+        res.status(404).send('user not found')
+      }
+    })
+    .catch((err) => {
+      res.status(500).send(err)
+    })
 })
 
 app.get('/api/auth/user', auth.authenticate(), (req, res) => {
@@ -97,7 +101,6 @@ app.get('/api/prices/:symbol', (req, res) => {
 })
 
 app.use(express.static('client/build'))
-
 app.get('/*', (req, res) => {
   res.sendFile(__dirname + '/client/build/index.html')
 })
