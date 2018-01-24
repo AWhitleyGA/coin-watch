@@ -6,7 +6,7 @@ if (process.env.NODE_ENV === 'production') {
   const mongoUrl = 'mongodb://localhost/coinwatch'
 }
 
-mongoose.connect('mongodb://localhost/coinwatch', { useMongoClient: true }, (err) => {
+mongoose.connect(mongoUrl, { useMongoClient: true }, (err) => {
   if (err) {
     console.log(err)
   }
