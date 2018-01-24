@@ -1,11 +1,6 @@
 const mongoose = require('mongoose')
-const mongoUrl
+const mongoUrl = process.env.NODE_ENV === 'production' ? process.env.MONGODB_URI : 'mongodb://localhost/coinwatch'
 
-if (process.env.NODE_ENV === 'production') {
-  mongoUrl = process.env.MONGODB_URI
-} else {
-  mongoUrl = 'mongodb://localhost/coinwatch'
-}
 
 mongoose.connect(mongoUrl, { useMongoClient: true }, (err) => {
   if (err) {
