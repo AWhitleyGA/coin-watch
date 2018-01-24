@@ -1,5 +1,5 @@
 module.exports = {
-  jwtSecret: 'coinwatchsecretkey',
+  jwtSecret: process.env.SECRET_KEY,
   jwtSession: {
     session: false
   }
