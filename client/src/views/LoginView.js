@@ -3,6 +3,8 @@ import axios from 'axios'
 
 import LoginForm from '../components/LoginForm'
 
+import { checkAuthentication } from '../utils'
+
 class LoginView extends Component {
   constructor (props) {
     super(props)
@@ -12,6 +14,13 @@ class LoginView extends Component {
     }
     this.handleInput = this.handleInput.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
+  }
+
+  componentDidMount () {
+    checkAuthentication()
+      .then(() => {
+        this.props.history.push('/dashboard')
+      })
   }
 
   handleInput (e) {
@@ -27,7 +36,8 @@ class LoginView extends Component {
     })
     .then((response) => {
       localStorage.setItem('CoinWatchToken', response.data.token)
-      let previousLocation = this.props.history.location.state.previousLocation
+      let previousLocation = this.props.history.location.state && this.props.history.location.state.previousLocation
+      this.props.onLogin(response.data.email)
       if (previousLocation) {
         this.props.history.push(previousLocation)
       } else {
