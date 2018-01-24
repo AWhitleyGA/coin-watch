@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
 if (process.env.NODE_ENV === 'production') {
-  const mongoUrl = process.env.MLAB_URL
+  const mongoUrl = process.env.MONGODB_URI
 } else {
   const mongoUrl = 'mongodb://localhost/coinwatch'
 }
