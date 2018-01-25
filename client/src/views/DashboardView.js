@@ -25,7 +25,7 @@ class DashboardView extends Component {
     checkAuthentication()
       .then(() => {
         axios({
-          type:'get',
+          method: 'get',
           url: '/api/tickers',
           headers: {
             Authorization: localStorage.getItem('CoinWatchToken')

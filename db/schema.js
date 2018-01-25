@@ -8,7 +8,8 @@ const TickerSchema = new mongoose.Schema({
 
 const UserSchema = new mongoose.Schema({
   email: String,
-  password: String
+  password: String,
+  tickers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Ticker' }]
 })
 
 UserSchema.pre('save', function (next) {

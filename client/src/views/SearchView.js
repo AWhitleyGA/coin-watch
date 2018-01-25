@@ -57,8 +57,15 @@ class SearchView extends Component {
   }
 
   addTicker () {
-    axios.post('/api/tickers', {
-      symbol: this.state.searchSymbol
+    axios({
+      method: 'post',
+      url: '/api/tickers',
+      headers: {
+        Authorization: localStorage.getItem('CoinWatchToken')
+      },
+      data: {
+        symbol: this.state.searchSymbol
+      }
     })
     .then((response) => {
       this.props.history.push(`/dashboard/${response.data.symbol}`)

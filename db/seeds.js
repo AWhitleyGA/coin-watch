@@ -3,7 +3,7 @@ const mongoose = require('./schema.js')
 const Ticker = mongoose.model('Ticker')
 const User = mongoose.model('User')
 
-const tickers = new Promise((resolve, reject) => {
+const createTickers = new Promise((resolve, reject) => {
   Ticker.remove({})
     .then(() => {
       return Ticker.create([
@@ -12,24 +12,8 @@ const tickers = new Promise((resolve, reject) => {
         { symbol: 'QTUMETH' },
         { symbol: 'BTCUSDT' }
       ])
-      .then(() => {
-        resolve()
-      })
-    })
-    .catch((err) => {
-      console.log(err)
-      reject()
-    })
-})
-
-const users = new Promise((resolve, reject) => {
-  User.remove({})
-    .then(() => {
-      return User.create([
-        { email: 'test@gmail.com', password: 'password' }
-      ])
-      .then(() => {
-        resolve()
+      .then((tickers) => {
+        resolve(tickers)
       })
     })
     .catch((err) => {
@@ -38,7 +22,43 @@ const users = new Promise((resolve, reject) => {
     })
 })
 
-Promise.all([tickers, users])
-  .then(() => {
-    process.exit()
+const createUsers = new Promise((resolve, reject) => {
+  User.remove({})
+    .then(() => {
+      return User.create([
+        { email: 'test@gmail.com', password: 'password' }
+      ])
+      .then((users) => {
+        resolve(users)
+      })
+    })
+    .catch((err) => {
+      console.log(err)
+      reject(err)
+    })
+})
+
+Promise.all([createTickers, createUsers])
+  .then((res) => {
+    const tickers = res[0]
+    const users = res[1]
+
+    const associations = new Promise((resolve, reject) => {
+      users.forEach((user, index) => {
+        user.update({ tickers: tickers })
+          .then(() => {
+            if (index === users.length - 1) {
+              resolve()
+            }
+          })
+          .catch((err) => {
+            reject(err)
+          })
+      })
+    })
+
+    associations.then(() => {
+      process.exit()
+    })
+
   })
