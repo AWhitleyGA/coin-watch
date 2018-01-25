@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import axios from 'axios'
+import { connect } from 'react-redux'
 import {
   NavLink,
   Route,
@@ -7,46 +7,29 @@ import {
   Redirect
 } from 'react-router-dom'
 
+import { checkAuthentication } from '../utils'
+import { fetchTickers } from '../actions/tickers'
+
 import CoinDetail from '../components/CoinDetail'
 
-import { checkAuthentication } from '../utils'
 
 import './DashboardView.css'
 
 class DashboardView extends Component {
-  constructor (props) {
-    super(props)
-    this.state = {
-      trackedCoins: []
-    }
-  }
-
   componentDidMount () {
     checkAuthentication()
       .then(() => {
-        axios({
-          method: 'get',
-          url: '/api/tickers',
-          headers: {
-            Authorization: localStorage.getItem('CoinWatchToken')
-          }
-        })
-        .then((response) => {
-          this.setState({
-            trackedCoins: response.data
-          })
-        })
-        .catch((err) => {
-          console.log(err)
-        })
+        this.props.fetchTickers()
       })
       .catch(() => {
-        this.props.history.replace('/login', { previousLocation: this.props.match.url })
+        this.props.history.replace('/login', {
+          previousLocation: this.props.match.url
+        })
       })
   }
 
   render () {
-    let coinLinks = this.state.trackedCoins.map((coin, index) => {
+    let coinLinks = this.props.tickers.map((coin, index) => {
       return (
         <NavLink
           to={`${this.props.match.url}/${coin.symbol}`}
@@ -59,7 +42,7 @@ class DashboardView extends Component {
       )
     })
 
-    let coinRoutes = this.state.trackedCoins.map((coin, index) => {
+    let coinRoutes = this.props.tickers.map((coin, index) => {
       return (
         <Route
           key={index}
@@ -78,10 +61,10 @@ class DashboardView extends Component {
           <Switch>
             {coinRoutes}
             {
-              this.state.trackedCoins.length &&
+              this.props.tickers.length &&
               <Route
                 path="/*"
-                render={() => <Redirect to={`${this.props.match.url}/${this.state.trackedCoins[0].symbol}`} />}
+                render={() => <Redirect to={`${this.props.match.url}/${this.props.tickers[0].symbol}`} />}
               />
             }
           </Switch>
@@ -91,5 +74,19 @@ class DashboardView extends Component {
   }
 }
 
+const mapStateToProps = (state) => {
+  return {
+    tickers: state.tickers
+  }
+}
 
-export default DashboardView
+const mapDispatchToProps = (dispatch) => {
+  return {
+    fetchTickers: () => {
+      dispatch(fetchTickers())
+    }
+  }
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(DashboardView)

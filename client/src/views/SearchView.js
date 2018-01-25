@@ -1,59 +1,35 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import axios from 'axios'
+
+import { checkAuthentication } from '../utils'
+import { fetchPrices } from '../actions/prices'
+import { updateSearchSymbol, selectSymbol } from '../actions/search'
+
+import './SearchView.css'
 
 import SearchForm from '../components/SearchForm'
 import FilteredList from '../components/FilteredList'
 import CoinDetail from '../components/CoinDetail'
 
-import { checkAuthentication } from '../utils'
 
-import './SearchView.css'
 
 class SearchView extends Component {
   constructor (props) {
     super(props)
-    this.state = {
-      searchSymbol: '',
-      symbolSelected: false,
-      symbolOptions: []
-    }
-    this.handleSearchInput = this.handleSearchInput.bind(this)
-    this.handleSymbolSelect = this.handleSymbolSelect.bind(this)
     this.addTicker = this.addTicker.bind(this)
   }
 
   componentDidMount () {
     checkAuthentication()
       .then(() => {
-        axios.get('/api/prices')
-          .then((response) => {
-            this.setState({
-              symbolOptions: response.data
-            })
-          })
-          .catch((err) => {
-            console.log(err)
-          })
+        this.props.fetchPrices()
       })
       .catch(() => {
         this.props.history.push('/login', {
           previousLocation: this.props.match.url
         })
       })
-  }
-
-  handleSearchInput (e) {
-    this.setState({
-      searchSymbol: e.target.value,
-      symbolSelected: false
-    })
-  }
-
-  handleSymbolSelect (e) {
-    this.setState({
-      searchSymbol: e.target.dataset.itemvalue,
-      symbolSelected: true,
-    })
   }
 
   addTicker () {
@@ -64,7 +40,7 @@ class SearchView extends Component {
         Authorization: localStorage.getItem('CoinWatchToken')
       },
       data: {
-        symbol: this.state.searchSymbol
+        symbol: this.props.search.searchSymbol
       }
     })
     .then((response) => {
@@ -79,28 +55,28 @@ class SearchView extends Component {
     return (
       <div className="SearchView">
         <SearchForm
-          value={this.state.searchSymbol}
-          onSearchInput={this.handleSearchInput}
+          value={this.props.search.searchSymbol}
+          onSearchInput={this.props.handleSearchInput}
           label="Ticker Search"
           placeholder="Enter Coin Symbol..."
         />
         {
-          this.state.searchSymbol &&
-          !this.state.symbolSelected &&
+          this.props.search.searchSymbol &&
+          !this.props.search.symbolSelected &&
           <FilteredList
-            fullList={this.state.symbolOptions}
+            fullList={this.props.prices}
             filterAttribute='symbol'
-            filterValue={this.state.searchSymbol}
+            filterValue={this.props.search.searchSymbol}
             displayAttribute='symbol'
-            onItemClick={this.handleSymbolSelect}
+            onItemClick={this.props.handleSymbolSelect}
           />
         }
         {
-          this.state.searchSymbol &&
-          this.state.symbolSelected &&
+          this.props.search.searchSymbol &&
+          this.props.search.symbolSelected &&
           <div>
             <CoinDetail
-              coin={{ symbol: this.state.searchSymbol }}
+              coin={{ symbol: this.props.search.searchSymbol }}
             />
             <button onClick={this.addTicker}>Add Ticker to Dashboard</button>
           </div>
@@ -110,5 +86,26 @@ class SearchView extends Component {
   }
 }
 
+const mapStateToProps = (state) => {
+  return {
+    prices: state.prices,
+    search: state.search
+  }
+}
 
-export default SearchView
+const mapDispatchToProps = (dispatch) => {
+  return {
+    fetchPrices: () => {
+      dispatch(fetchPrices())
+    },
+    handleSearchInput: (e) => {
+      dispatch(updateSearchSymbol(e.target.value))
+    },
+    handleSymbolSelect: (e) => {
+      dispatch(selectSymbol(e.target.dataset.itemvalue))
+    }
+  }
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(SearchView)
