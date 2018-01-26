@@ -1,64 +1,56 @@
 import React, { Component } from 'react'
-import axios from 'axios'
+import { connect } from 'react-redux'
 
 import LoginForm from '../components/LoginForm'
 
-import { checkAuthentication } from '../utils'
+import { updateCredentials, postCredentials } from '../actions/auth'
 
 class LoginView extends Component {
-  constructor (props) {
-    super(props)
-    this.state = {
-      email: '',
-      password: ''
-    }
-    this.handleInput = this.handleInput.bind(this)
-    this.handleSubmit = this.handleSubmit.bind(this)
-  }
-
   componentDidMount () {
-    checkAuthentication()
-      .then(() => {
-        this.props.history.push('/dashboard')
-      })
+    if (this.props.auth.user) {
+      this.props.history.push('/dashboard')
+    }
   }
 
-  handleInput (e) {
-    this.setState({
-      [e.target.name]: e.target.value
-    })
-  }
-
-  handleSubmit (e) {
-    axios.post('/api/auth/login', {
-      email: this.state.email,
-      password: this.state.password
-    })
-    .then((response) => {
-      localStorage.setItem('CoinWatchToken', response.data.token)
+  componentDidUpdate () {
+    if (this.props.auth.user) {
       let previousLocation = this.props.history.location.state && this.props.history.location.state.previousLocation
-      this.props.onLogin(response.data.email)
+
       if (previousLocation) {
         this.props.history.push(previousLocation)
       } else {
         this.props.history.push('/dashboard')
       }
-    })
-    .catch((err) => {
-      console.log(err)
-    })
+    }
   }
 
   render () {
     return (
       <LoginForm
         fields={['email', 'password']}
-        onInput={this.handleInput}
-        onSubmit={this.handleSubmit}
+        onInput={this.props.handleInput}
+        onSubmit={this.props.handleSubmit}
       />
     )
   }
 }
 
+const mapStateToProps = (state) => {
+  return {
+    auth: state.auth
+  }
+}
 
-export default LoginView
+const mapDispatchToProps = (dispatch) => {
+  return {
+    handleInput: (e) => {
+      dispatch(updateCredentials(e.target.name, e.target.value))
+    },
+    handleSubmit: (e) => {
+      dispatch(postCredentials())
+    }
+  }
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(LoginView)

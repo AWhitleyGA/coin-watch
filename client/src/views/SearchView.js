@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import axios from 'axios'
 
-import { checkAuthentication } from '../utils'
 import { fetchPrices } from '../actions/prices'
 import { updateSearchSymbol, selectSymbol } from '../actions/search'
 
@@ -21,15 +20,13 @@ class SearchView extends Component {
   }
 
   componentDidMount () {
-    checkAuthentication()
-      .then(() => {
-        this.props.fetchPrices()
+    if (!this.props.auth.user) {
+      this.props.history.push('/login', {
+        previousLocation: this.props.location.pathName
       })
-      .catch(() => {
-        this.props.history.push('/login', {
-          previousLocation: this.props.match.url
-        })
-      })
+    } else {
+      this.props.fetchPrices()
+    }
   }
 
   addTicker () {
@@ -89,7 +86,8 @@ class SearchView extends Component {
 const mapStateToProps = (state) => {
   return {
     prices: state.prices,
-    search: state.search
+    search: state.search,
+    auth: state.auth
   }
 }
 

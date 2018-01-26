@@ -6,46 +6,23 @@ import {
   Switch,
   withRouter
 } from 'react-router-dom'
+import { connect } from 'react-redux'
+
+import { postToken, clearUser } from './actions/auth'
 
 import DashboardView from './views/DashboardView'
 import SearchView from './views/SearchView'
 import LoginView from './views/LoginView'
 
-import { checkAuthentication } from './utils'
-
 import './App.css'
 
 class App extends Component {
-  constructor (props) {
-    super(props)
-    this.state = {
-      user: null
-    }
-    this.handleLogin = this.handleLogin.bind(this)
-    this.handleLogout = this.handleLogout.bind(this)
-  }
-
   componentDidMount () {
-    checkAuthentication()
-      .then((response) => {
-        this.setState({
-          user: response.email
-        })
-      })
-  }
-
-  handleLogin (user) {
-    this.setState({
-      user: user
-    })
-  }
-
-  handleLogout () {
-    localStorage.removeItem('CoinWatchToken')
-    this.setState({
-      user: null
-    })
-    this.props.history.push('/login')
+    if (localStorage.getItem('CoinWatchToken')) {
+      this.props.checkToken()
+    } else {
+      this.props.history.push('/login')
+    }
   }
 
   render() {
@@ -59,8 +36,8 @@ class App extends Component {
           </div>
           <div className="navbar__section">
             {
-              this.state.user &&
-              <button className="navbar__item" onClick={this.handleLogout}>Log Out</button>
+              this.props.auth.user &&
+              <button className="navbar__item" onClick={this.props.handleLogout}>Log Out</button>
             }
           </div>
         </nav>
@@ -76,12 +53,7 @@ class App extends Component {
             />
             <Route
               path='/login'
-              render={(props) => (
-                <LoginView
-                  {...props}
-                  onLogin={this.handleLogin}
-                />
-              )}
+              component={LoginView}
             />
             <Route
               path='/*'
@@ -97,4 +69,22 @@ class App extends Component {
   }
 }
 
-export default withRouter(App)
+const mapStateToProps = (state) => {
+  return {
+    auth: state.auth
+  }
+}
+
+const mapDispatchToProps = (dispatch, props) => {
+  return {
+    checkToken: () => {
+      dispatch(postToken())
+    },
+    handleLogout: () => {
+      dispatch(clearUser())
+      props.history.push('/login')
+    }
+  }
+}
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App))

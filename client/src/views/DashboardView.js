@@ -7,7 +7,6 @@ import {
   Redirect
 } from 'react-router-dom'
 
-import { checkAuthentication } from '../utils'
 import { fetchTickers } from '../actions/tickers'
 
 import CoinDetail from '../components/CoinDetail'
@@ -17,15 +16,13 @@ import './DashboardView.css'
 
 class DashboardView extends Component {
   componentDidMount () {
-    checkAuthentication()
-      .then(() => {
-        this.props.fetchTickers()
+    if (!this.props.auth.user) {
+      this.props.history.push('/login', {
+        previousLocation: this.props.location.pathName
       })
-      .catch(() => {
-        this.props.history.replace('/login', {
-          previousLocation: this.props.match.url
-        })
-      })
+    } else {
+      this.props.fetchTickers()
+    }
   }
 
   render () {
@@ -76,7 +73,8 @@ class DashboardView extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    tickers: state.tickers
+    tickers: state.tickers,
+    auth: state.auth
   }
 }
 

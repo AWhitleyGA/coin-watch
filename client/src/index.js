@@ -9,10 +9,12 @@ import './index.css'
 import App from './App'
 import registerServiceWorker from './registerServiceWorker'
 
-import store from './store'
+import Store from './Store'
+
+const store = Store()
 
 ReactDOM.render(
-  <Provider store={store()}>
+  <Provider store={store}>
     <Router>
       <App />
     </Router>
