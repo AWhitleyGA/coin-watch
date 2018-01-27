@@ -1,5 +1,12 @@
 import axios from 'axios'
 
+export function selectTicker (ticker) {
+  return {
+    type: 'SELECT TICKER',
+    payload: ticker
+  }
+}
+
 export function fetchTickers () {
   return (dispatch, getState) => {
     axios({
@@ -21,6 +28,6 @@ export function fetchTickers () {
 export function receiveTickers (tickers) {
   return {
     type: 'RECEIVE TICKERS',
-    tickers
+    payload: tickers
   }
 }

@@ -1,46 +1,26 @@
 import React, { Component } from 'react'
-import axios from 'axios'
 import { ResponsiveContainer, LineChart, Line, CartesianGrid, YAxis, XAxis, Tooltip } from 'recharts'
-import moment from 'moment'
+import { connect } from 'react-redux'
+
+import { fetchPriceHistory } from '../actions/prices'
+import { selectTicker } from '../actions/tickers'
 
 class CoinDetail extends Component {
-  constructor (props) {
-    super(props)
-    this.state = {
-      recentPrices: [],
-    }
-  }
 
   componentDidMount () {
-    this.fetchTradeData()
-  }
-
-  fetchTradeData () {
-    axios.get(`/api/prices/${this.props.coin.symbol}`)
-      .then((response) => {
-        this.setState({
-          recentPrices: response.data.map((price) => {
-            return {
-              time: moment(price[0]).format('h:mma'),
-              price: parseFloat(price[1])
-            }
-          })
-        })
-      })
-      .catch((err) => {
-        console.log(err)
-      })
+    this.props.setTicker(this.props.coin.symbol)
+    this.props.fetchPriceHistory()
   }
 
   render () {
     return (
       <div>
-        <h2>{this.props.coin.symbol}</h2>
+        <h2>{this.props.tickers.selectedTicker}</h2>
         {
-          !this.state.recentPrices[0] ?
+          !this.props.prices.priceHistory[0] ?
           <p>Loading...</p> :
           <div>
-            <p>{this.state.recentPrices[0] && this.state.recentPrices[0].price}</p>
+            <p>{this.props.prices.priceHistory[0] && this.props.prices.priceHistory[0].price}</p>
             <ResponsiveContainer
               width="90%"
               height={400}
@@ -52,7 +32,7 @@ class CoinDetail extends Component {
                   left: 50,
                   right: 0
                 }}
-                data={this.state.recentPrices}
+                data={this.props.prices.priceHistory}
               >
                 <CartesianGrid strokeDasharray='2 2' />
                 <XAxis dataKey='time' />
@@ -75,5 +55,23 @@ class CoinDetail extends Component {
   }
 }
 
+const mapStateToProps = (state) => {
+  return {
+    prices: state.prices,
+    tickers: state.tickers
+  }
+}
 
-export default CoinDetail
+const mapDispatchToProps = (dispatch) => {
+  return {
+    fetchPriceHistory: () => {
+      dispatch(fetchPriceHistory())
+    },
+    setTicker: (ticker) => {
+      dispatch(selectTicker(ticker))
+    }
+  }
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(CoinDetail)

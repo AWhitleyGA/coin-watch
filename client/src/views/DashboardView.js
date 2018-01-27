@@ -26,7 +26,7 @@ class DashboardView extends Component {
   }
 
   render () {
-    let coinLinks = this.props.tickers.map((coin, index) => {
+    let coinLinks = this.props.tickers.tickers.map((coin, index) => {
       return (
         <NavLink
           to={`${this.props.match.url}/${coin.symbol}`}
@@ -39,7 +39,7 @@ class DashboardView extends Component {
       )
     })
 
-    let coinRoutes = this.props.tickers.map((coin, index) => {
+    let coinRoutes = this.props.tickers.tickers.map((coin, index) => {
       return (
         <Route
           key={index}
@@ -58,10 +58,10 @@ class DashboardView extends Component {
           <Switch>
             {coinRoutes}
             {
-              this.props.tickers.length &&
+              this.props.tickers.tickers.length &&
               <Route
                 path="/*"
-                render={() => <Redirect to={`${this.props.match.url}/${this.props.tickers[0].symbol}`} />}
+                render={() => <Redirect to={`${this.props.match.url}/${this.props.tickers.tickers[0].symbol}`} />}
               />
             }
           </Switch>

@@ -61,7 +61,7 @@ class SearchView extends Component {
           this.props.search.searchSymbol &&
           !this.props.search.symbolSelected &&
           <FilteredList
-            fullList={this.props.prices}
+            fullList={this.props.prices.prices}
             filterAttribute='symbol'
             filterValue={this.props.search.searchSymbol}
             displayAttribute='symbol'
